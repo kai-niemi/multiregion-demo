@@ -20,8 +20,7 @@ values
     ('eu-central-1','60000000-0000-0000-0000-000000000000'::UUID, '1000000.00', 'user:6', 'Asset', false, 0),
     ('ap-northeast-1','70000000-0000-0000-0000-000000000000'::UUID, '1000000.00', 'user:7', 'Asset', false, 0),
     ('ap-northeast-1','80000000-0000-0000-0000-000000000000'::UUID, '1000000.00', 'user:8', 'Asset', false, 0),
-    ('ap-northeast-1','90000000-0000-0000-0000-000000000000'::UUID, '1000000.00', 'user:9', 'Asset', false, 0)
-;
+    ('ap-northeast-1','90000000-0000-0000-0000-000000000000'::UUID, '1000000.00', 'user:9', 'Asset', false, 0);
 
 -- Insert some more accounts
 insert into account (crdb_region, balance, name, type, closed, allow_negative)

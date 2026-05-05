@@ -22,7 +22,7 @@ WITH shuffled AS (
                   JOIN shuffled b
                        ON b.rn = a.rn + 1
          WHERE a.rn % 2 = 1
-    LIMIT 100
+    LIMIT 10
     ),
     batched AS (
 SELECT
@@ -53,7 +53,7 @@ WITH shuffled AS (
                   JOIN shuffled b
                        ON b.rn = a.rn + 1
          WHERE a.rn % 2 = 1
-         LIMIT 100
+         LIMIT 10
      ),
      batched AS (
          SELECT
@@ -83,7 +83,7 @@ WITH shuffled AS (
                   JOIN shuffled b
                        ON b.rn = a.rn + 1
          WHERE a.rn % 2 = 1
-         LIMIT 100
+         LIMIT 10
      ),
      batched AS (
          SELECT

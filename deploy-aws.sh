@@ -1,7 +1,7 @@
 #!/bin/bash
 # Multi-region cloud deployment script using roachprod.
 
-releaseversion="v26.1.4"
+releaseversion="v26.1.3"
 nodes=12
 dbnodes="1-9"
 clientnodes="10,11,12"
@@ -14,8 +14,8 @@ us-east-1a,\
 us-east-1b,\
 us-east-1c,\
 ap-northeast-1a,\
-ap-northeast-1b,\
 ap-northeast-1c,\
+ap-northeast-1d,\
 eu-central-1a,\
 us-east-1a,\
 ap-northeast-1a"
@@ -36,6 +36,26 @@ if [ -z "${CLUSTER}" ]; then
   exit 1
 fi
 
+IFS=',' read -ra regions_arr <<< "$regions"
+IFS=',' read -ra clients_arr <<< "$clientnodes"
+
+echo "Machines: ${machinetype}"
+echo "Nodes: ${nodes}"
+echo "DB nodes: ${dbnodes}"
+echo "Client nodes: ${clientnodes}"
+echo "Regions: ${regions}"
+echo "Zones: ${zones}"
+
+#echo "Clients:"
+#for value in "${clients_arr[@]}" ; do
+#echo -e "$value"
+#done
+#
+#echo "Regions:"
+#for value in "${regions_arr[@]}" ; do
+#echo -e "$value"
+#done
+
 fn_prompt_yes_no(){
 	local prompt="$1"
 
@@ -52,63 +72,56 @@ fn_prompt_yes_no(){
 	done
 }
 
-IFS=',' read -ra regions_arr <<< "$regions"
-IFS=',' read -ra clients_arr <<< "$clientnodes"
+fn_create_cluster(){
+  echo ">> Creating cluster"
 
-echo "Nodes: ${nodes}"
-echo "DB nodes: ${dbnodes}"
-echo "Client nodes: ${clientnodes}"
-echo "Regions: ${regions}"
-echo "Zones: ${zones}"
+  roachprod create $CLUSTER --clouds=aws \
+  --aws-machine-type-ssd=${machinetype} --aws-zones=${zones} \
+  --aws-profile crl-revenue --aws-config ~/rev.json \
+  --geo --local-ssd-no-ext4-barrier \
+  --nodes=${nodes} \
+  --os-volume-size 750 \
+  --lifetime 36h0m0s
+}
+fn_stage_cluster(){
+  echo ">> Staging cluster ($releaseversion)"
 
-echo "Clients:"
-for value in "${clients_arr[@]}" ; do
-echo -e "$value"
-done
+  roachprod stage $CLUSTER release $releaseversion
+}
+fn_start_cluster(){
+  echo ">> Starting cluster"
 
-echo "Regions:"
-for value in "${regions_arr[@]}" ; do
-echo -e "$value"
-done
+  roachprod start --insecure $CLUSTER:$dbnodes
+  roachprod admin --insecure --open --ips $CLUSTER:1
+}
+fn_stage_clients(){
+  echo ">> Staging clients"
 
-if fn_prompt_yes_no "Create this cluster?" N; then
+  roachprod run --insecure ${CLUSTER}:$clientnodes 'sudo apt-get -qq update'
+  roachprod run --insecure ${CLUSTER}:$clientnodes 'sudo apt-get -qq install -y openjdk-21-jre-headless htop dstat haproxy'
+  #roachprod put --insecure ${CLUSTER}:$clientnodes target/demo.jar
+}
+
+fn_start_haproxy(){
+  echo ">> Starting haproxy"
+
+  i=0;
+  for c in "${clients_arr[@]}" ; do
+    region=${regions_arr[$i]}
+    i=($i+1)
+    roachprod run ${CLUSTER}:$c "./cockroach gen haproxy --insecure --host $(roachprod ip $CLUSTER:1 --external) --locality=region=$region"
+  done
+
+  roachprod run --insecure ${CLUSTER}:$clientnodes 'nohup haproxy -f haproxy.cfg > /dev/null 2>&1 &'
+}
+
+if ! fn_prompt_yes_no "Create this cluster?" ; then
   exit 0
 fi
 
-echo ">> Creating cluster"
-
-roachprod create $CLUSTER --clouds=aws \
---aws-machine-type-ssd=${machinetype} --aws-zones=${zones} \
---aws-profile crl-revenue --aws-config ~/rev.json \
---geo --local-ssd-no-ext4-barrier \
---nodes=${nodes} \
---os-volume-size 750 \
---lifetime 36h0m0s
-
-echo ">> Staging cluster ($releaseversion)"
-
-roachprod stage $CLUSTER release $releaseversion
-
-echo ">> Starting cluster"
-
-roachprod start --insecure $CLUSTER:$dbnodes
-roachprod admin --insecure --open --ips $CLUSTER:1
-
-echo ">> Staging clients"
-
-roachprod run --insecure ${CLUSTER}:$clientnodes 'sudo apt-get -qq update'
-roachprod run --insecure ${CLUSTER}:$clientnodes 'sudo apt-get -qq install -y openjdk-21-jre-headless htop dstat haproxy'
-#roachprod put --insecure ${CLUSTER}:$clientnodes target/demo.jar
-
-echo ">> Starting haproxy"
-
-i=0;
-for c in "${clients_arr[@]}" ; do
-  region=${regions_arr[$i]}
-  i=($i+1)
-  roachprod run ${CLUSTER}:$c "./cockroach gen haproxy --insecure --host $(roachprod ip $CLUSTER:1 --external) --locality=region=$region"
-done
-
-roachprod run --insecure ${CLUSTER}:$clientnodes 'nohup haproxy -f haproxy.cfg > /dev/null 2>&1 &'
+fn_create_cluster
+fn_stage_cluster
+fn_start_cluster
+fn_start_haproxy
 
 echo "Done"
