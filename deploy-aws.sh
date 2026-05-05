@@ -94,12 +94,19 @@ fn_start_cluster(){
   roachprod start --insecure $CLUSTER:$dbnodes
   roachprod admin --insecure --open --ips $CLUSTER:1
 }
+
 fn_stage_clients(){
   echo ">> Staging clients"
 
   roachprod run --insecure ${CLUSTER}:$clientnodes 'sudo apt-get -qq update'
   roachprod run --insecure ${CLUSTER}:$clientnodes 'sudo apt-get -qq install -y openjdk-21-jre-headless htop dstat haproxy'
-  #roachprod put --insecure ${CLUSTER}:$clientnodes target/demo.jar
+}
+
+fn_stage_app(){
+  echo ">> Staging app"
+
+  roachprod put ${CLUSTER}:$clientnodes run.sh
+  roachprod put ${CLUSTER}:$clientnodes target/demo.jar
 }
 
 fn_start_haproxy(){
@@ -123,5 +130,6 @@ fn_create_cluster
 fn_stage_cluster
 fn_start_cluster
 fn_start_haproxy
+#fn_stage_app
 
 echo "Done"
