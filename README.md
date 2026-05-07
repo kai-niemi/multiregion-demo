@@ -1,3 +1,5 @@
+[![Java CI with Maven](https://github.com/kai-niemi/demo-multiregion/actions/workflows/maven.yml/badge.svg?branch=main)](https://github.com/kai-niemi/demo-multiregion/actions/workflows/maven.yml)
+
 <!-- TOC -->
 * [CockroachDB multi-region demo](#cockroachdb-multi-region-demo)
   * [How to run the demo](#how-to-run-the-demo)
