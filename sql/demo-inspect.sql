@@ -1,7 +1,14 @@
+-- Show regions
+show regions from database demo;
+
+-- Show zone survival goal (default)
+select survival_goal from [show databases] where database_name = 'demo';
+
+-- Show ranges for table
 show ranges from table account;
 show ranges from index account@primary;
 
--- Inspect row level replica placement (note it doesnt check for row exists)
+-- Inspect row level replica placement (note it doesn't check for row exists)
 select distinct
     split_part(unnest(replica_localities), ',', 2) replica_locality,
     replicas
@@ -29,7 +36,7 @@ select distinct
     from [show ranges from table account]
 order by region,az;
 
--- Show range replica distribution by row for table account
+-- Show replica distribution for RBR table
 with replicas as (
     select distinct
         split_part(unnest(replica_localities), ',', 2) replica_locality,
@@ -47,7 +54,7 @@ with replicas as (
     from [show range from table account for row ('ap-northeast-1', '10000000-0000-0000-0000-000000000000'::UUID)]
 ) select * from replicas order by replica_locality;
 
--- Global table
+-- Show replica distribution for global table
 select distinct
     split_part(unnest(replica_localities), ',', 2) replica_locality,
     replicas

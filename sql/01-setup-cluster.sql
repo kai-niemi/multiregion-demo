@@ -76,8 +76,6 @@ VALUES ('region', 'us-east-1', 37.478397, -76.453077),
        ('region', 'asia-southeast-2', -6.173292, 106.841036),
        ('region', 'asia-southeast-3', 3.140853, 101.693207);
 
--- update system.locations set latitude=-6.173292, longitude=106.841036 where "localityValue"='ap-southeeast-5';
-
 UPSERT into system.locations
 VALUES ('region', 'aws-us-east-1', 37.478397, -76.453077),
        ('region', 'aws-us-east-2', 40.417287, -76.453077),

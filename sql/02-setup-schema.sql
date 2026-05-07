@@ -9,11 +9,6 @@ create database demo
 
 use demo;
 
--- Show regions
-show regions from database demo;
--- Show zone survival goal (default)
-select survival_goal from [show databases] where database_name = 'demo';
-
 -------------------------
 -- Add regions (optional)
 -------------------------
