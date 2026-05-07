@@ -7,6 +7,10 @@ create database demo
     primary region "eu-central-1"
     regions "us-east-1", "ap-northeast-1";
 
+-- create database demo
+--     primary region "eu-central-1"
+--     regions "eu-west-1", "eu-west-2", "us-east-1", "us-east-2", "us-west-1", "ap-northeast-1","ap-northeast-2","ap-northeast-3";
+
 use demo;
 
 -------------------------
