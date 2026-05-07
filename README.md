@@ -75,8 +75,20 @@ Lastly, clean up to repeat the demo if need be:
 
 ## Remarks
 
-To demonstrate region survival with super region data domiciling, you will need 
-at least three regions per super region. Something in terms of:
+Super regions is a mechanism for combining data domiciling with region 
+survival. Only zone survival can use placement restrictions. To demonstrate 
+region survival with super region data domiciling, you will need at least 
+three regions per super region. 
+
+The reason is that each super region needs at least 3 subregions to survive 
+the loss of one region, and each region should have 3 nodes for resilience
+and to honor placement constraints. If there’s not enough nodes in each region 
+to satisfy the survival goal (replication factor of 3), then it will prioritize 
+survival and place replicas outside the defined constraints, which would be a 
+violation of placement constraints. In that case, you could end up with 
+replicas for eu in us or ap regions or any combination there of.
+
+So: 3 super regions × 3 regions × 3 nodes = 27 nodes.
 
 | Super region | Region         | Zone            | Nodes | LB/clients |
 |:-------------|----------------|-----------------|-------|:-----------|
@@ -108,6 +120,31 @@ at least three regions per super region. Something in terms of:
 |              |                | ap-southeast-1b | 1     |            |
 |              |                | ap-southeast-1c | 1     |            |
 | Σ            |                |                 | 27    | 9          |
+
+Technically, you can also use only 2 super regions in which case its: 
+2 super regions × 3 regions × 3 nodes = 18 nodes.
+
+| Super region | Region         | Zone            | Nodes | LB/clients |
+|:-------------|----------------|-----------------|-------|:-----------|
+| eu           | eu-central-1   | eu-central-1a   | 1     | 1          |
+|              |                | eu-central-1b   | 1     |            |
+|              |                | eu-central-1c   | 1     |            |
+|              | eu-west-1      | eu-west-1a      | 1     | 1          |
+|              |                | eu-west-1b      | 1     |            |
+|              |                | eu-west-1c      | 1     |            |
+|              | eu-west-2      | eu-west-1a      | 1     | 1          |
+|              |                | eu-west-1b      | 1     |            |
+|              |                | eu-west-1c      | 1     |            |
+| us           | us-east-1      | us-east-1a      | 1     | 1          |
+|              |                | us-east-1b      | 1     |            |
+|              |                | us-east-1c      | 1     |            |
+|              | us-east-2      | us-east-2a      | 1     | 1          |
+|              |                | us-east-2b      | 1     |            |
+|              |                | us-east-2c      | 1     |            |
+|              | us-west-1      | us-west-1a      | 1     | 1          |
+|              |                | us-west-1b      | 1     |            |
+|              |                | us-west-1c      | 1     |            |
+| Σ            |                |                 | 18    | 6          |
 
 # Demo app
 

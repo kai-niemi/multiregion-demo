@@ -1,8 +1,6 @@
 SET sql_safe_updates = false;
 SET allow_unsafe_internals = true;
 
--- drop database demo;
-
 create database demo
     primary region "eu-central-1"
     regions "us-east-1", "ap-northeast-1";
