@@ -11,7 +11,7 @@
     </parent>
 
     <groupId>io.cockroachdb.demo</groupId>
-    <artifactId>demo-multiregion</artifactId>
+    <artifactId>multiregion-demo</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
