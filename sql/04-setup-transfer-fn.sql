@@ -1,3 +1,5 @@
+-- A CTE that creates a balanced, multi-legged monetary transaction
+-- between select account IDs.
 CREATE OR REPLACE FUNCTION fn_create_transfer_batch(
     p_credit_account_ids UUID[],
     p_debit_account_ids  UUID[],

@@ -1,10 +1,3 @@
--- truncate table transfer_item;
--- truncate table transfer;
-
---
--- Create 10 transfers towards random accounts.
---
-
 -- Random transfers for accounts only in eu-central-1 region
 WITH shuffled AS (
     SELECT

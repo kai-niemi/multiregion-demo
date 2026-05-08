@@ -7,12 +7,12 @@
 --
 
 -- Local latency from eu-central-1
-explain
+--explain
 select id,crdb_region from account
 where id='40000000-0000-0000-0000-000000000000' and crdb_region='eu-central-1';
 
--- Local latency from everywhere
-explain
+-- Local latency from everywhere (unless all replicas are pinned)
+--explain
 select id,crdb_region from account
 as of system time follower_read_timestamp()
 where id='40000000-0000-0000-0000-000000000000';
