@@ -32,10 +32,10 @@ import io.cockroachdb.demo.task.support.TransactionAware;
  */
 @Name(value = "update-set", alias = "us",
         options = {
-                "--param limit=10000",
-                "--param setSize=10",
-                "--param transactional=false",
-                "--param region=<any>"
+                "--limit 10000",
+                "--size 10",
+                "--transactional false",
+                "--region <any>"
         })
 public class UpdateSet implements Task, DataSourceAware, TransactionAware {
     private final Logger logger = LoggerFactory.getLogger(getClass());
@@ -48,7 +48,7 @@ public class UpdateSet implements Task, DataSourceAware, TransactionAware {
 
     private boolean transactional;
 
-    private int setSize;
+    private int size;
 
     private String region;
 
@@ -70,7 +70,7 @@ public class UpdateSet implements Task, DataSourceAware, TransactionAware {
         this.region = params.getOrDefault("region", gateway);
 
         this.transactional = Boolean.parseBoolean(params.getOrDefault("transactional", "false"));
-        this.setSize = Integer.parseInt(params.getOrDefault("setSize", "10"));
+        this.size = Integer.parseInt(params.getOrDefault("size", "10"));
 
         int limit = Integer.parseInt(params.getOrDefault("limit", "10000"));
 
@@ -82,7 +82,7 @@ public class UpdateSet implements Task, DataSourceAware, TransactionAware {
 
     @Override
     public final void run() {
-        Set<UUID> keys = IntStream.rangeClosed(1, setSize)
+        Set<UUID> keys = IntStream.rangeClosed(1, size)
                 .mapToObj(value -> ids.get(ThreadLocalRandom.current().nextInt(ids.size())))
                 .collect(Collectors.toSet());
 

@@ -16,9 +16,9 @@ import io.cockroachdb.demo.task.support.Task;
  */
 @Name(value = "fake", alias = "f",
         options = {
-                "--param minWait=5",
-                "--param maxWait=15",
-                "--param errorProbability=.001",
+                "--minWait 5",
+                "--maxWait 15",
+                "--errorProbability .001",
         })
 public class Fake implements Task {
     private long minWaitMillis;

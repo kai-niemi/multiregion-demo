@@ -13,8 +13,8 @@ import io.cockroachdb.demo.task.support.Name;
  */
 @Name(value = "read-key", alias = "rk",
         options = {
-                "--param limit=10",
-                "--param region=<any>"
+                "--limit 10",
+                "--region <any>"
         })
 public class ReadKey extends AbstractReadKey {
     protected void runQuery(JdbcTemplate jdbcTemplate, UUID id, String region) {

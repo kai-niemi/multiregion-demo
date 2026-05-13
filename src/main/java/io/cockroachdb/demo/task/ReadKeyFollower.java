@@ -13,8 +13,8 @@ import io.cockroachdb.demo.task.support.Name;
  */
 @Name(value = "read-key-follower", alias = "rkf",
         options = {
-                "--param limit=10",
-                "--param region=<any>"
+                "--limit 10",
+                "--region <any>"
         })
 public class ReadKeyFollower extends AbstractReadKey {
     @Override

@@ -39,6 +39,15 @@ select distinct
     from [show ranges from table account]
 order by region,az;
 
+-- And yet another way
+select
+    start_key,
+    end_key,
+    lease_holder,
+    range_size / 1024 / 1024 as size_mb
+from [show ranges from table account with details]
+order by start_key;
+
 -- Show replica distribution across the 3 regions for a RBR table
 with replicas as (
     select distinct
@@ -57,7 +66,8 @@ with replicas as (
     from [show range from table account for row ('ap-northeast-1', '10000000-0000-0000-0000-000000000000'::UUID)]
 ) select * from replicas order by replica_locality;
 
--- Show replica distribution for global table
+-- Show replica
+-- distribution for global table
 select distinct
     split_part(unnest(replica_localities), ',', 2) replica_locality,
     replicas

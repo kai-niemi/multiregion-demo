@@ -24,8 +24,8 @@ import io.cockroachdb.demo.task.support.Task;
  */
 @Name(value = "update-key", alias = "uk",
         options = {
-                "--param limit=2",
-                "--param region=<any>"
+                "--limit 2",
+                "--region <any>"
         })
 public class UpdateKey implements Task, DataSourceAware {
     private final Logger logger = LoggerFactory.getLogger(getClass());

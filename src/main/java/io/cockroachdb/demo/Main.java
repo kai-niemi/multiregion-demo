@@ -34,8 +34,8 @@ public class Main {
                     .info("--duration <time>            Task execution duration (15m)")
                     .info("--trace                      Enable SQL trace logging (false)")
                     .info("--rc                         Enable READ_COMMITTED isolation (SERIALIZABLE)")
-                    .info("--param <key=value>          Task parameter")
                     .info("--profiles [profile,..]      Override spring profiles to activate")
+                    .info("--<key [value]>              Task parameter k/v tuple")
                     .header("Available tasks include (name|alias|params):")
                     .info(Application.AVAILABLE_TASKS
                             .stream().map(task -> {

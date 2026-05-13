@@ -41,10 +41,10 @@ import com.zaxxer.hikari.HikariConfigMXBean;
 import com.zaxxer.hikari.HikariDataSource;
 
 import io.cockroachdb.demo.task.Fake;
-import io.cockroachdb.demo.task.ReadKeyFollower;
 import io.cockroachdb.demo.task.ReadKey;
-import io.cockroachdb.demo.task.UpdateSet;
+import io.cockroachdb.demo.task.ReadKeyFollower;
 import io.cockroachdb.demo.task.UpdateKey;
+import io.cockroachdb.demo.task.UpdateSet;
 import io.cockroachdb.demo.task.core.WorkerManager;
 import io.cockroachdb.demo.task.support.DataSourceAware;
 import io.cockroachdb.demo.task.support.Name;
@@ -109,16 +109,13 @@ public class Application implements CommandLineRunner, ApplicationContextAware {
                 } else {
                     params.put("duration", argsList.pop());
                 }
-            } else if (arg.equals("--param")) {
-                if (argsList.isEmpty()) {
-                    printUsageAndQuit("Expected k/v tuple after: " + arg);
-                } else {
-                    String[] t = argsList.pop().split("=");
-                    Assert.state(t.length == 2, "Expected key=value");
-                    params.put(t[0], t[1]);
-                }
             } else if (arg.startsWith("--")) {
-                logger.warn("Unrecognized option: '" + arg + "' - skipping");
+                String k = arg.substring(2);
+                if (argsList.isEmpty()) {
+                    params.put(k, null);
+                } else {
+                    params.put(k, argsList.pop());
+                }
             } else {
                 taskNames.add(arg);
             }
